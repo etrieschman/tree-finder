@@ -1,4 +1,9 @@
+# local initialization
 bin/
 include/
 lib/
 share/
+.DS_Store
+
+# other ignores
+data/
