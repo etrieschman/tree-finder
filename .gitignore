@@ -1,9 +1,13 @@
-# local initialization
+# local instantiation
 bin/
 include/
 lib/
 share/
+etc/
 .DS_Store
 
 # other ignores
 data/
+
+# notebook checkpoints
+.ipynb_checkpoints
