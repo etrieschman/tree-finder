@@ -48,7 +48,7 @@ Institution1 address\\
 %%%%%%%%% BODY TEXT
 \section{Introduction}
 
-Trees are a large carbon pool for our planet. They play a vital role in offseting anthropogenic carbon emissions and attenuating the effects of climate change. We can grow this pool through afforestation and deferred deforestation, oftentimes supported through carbon offset payments by sectors emitting carbon to the landowners growing these forests. \cite{Alpher03,Alpher02,Authors14}
+Trees are a large carbon pool for our planet. They play a vital role in offseting anthropogenic carbon emissions and attenuating the effects of climate change. We can grow this pool through afforestation and deferred deforestation, oftentimes supported through carbon offset payments by sectors emitting carbon to the landowners growing these forests. 
 
 One high-potential opportunity for afforestation is through the transition of pastureland operations to silvopasture operations. Silvopasture is simply the agricultural practice of combining tree cropping with livestock management. 
 
@@ -61,16 +61,35 @@ This research develops a novel dataset of tree photographs and trains a deep lea
 
 In this paper I compile a novel dataset of high-fidelity tree photographs, taken in profile perspective. The dataset contains classified images of the 7 most common trees used in silvopasture in the southeastern US, where pilot projects for this silvopasture transition are underway. I then train a deep learning model to predict tree species from profile-vew tree photographs
 
+%------------------------------------------------------------------------
+\subsection{Related work}
+
+Image classification is a common problem solved using convolutional neural networks. [[DESCRIPTIONS OF IMAGENET, ALEXNET, VGGNET, GOOGLENET, AND RESNET]]. 
+
+[[PAPER]] Expanded the possibilities of using pretrained models in the described frameworks for use in more targeted settings. [[SUMMARY OF APPROACH]]. [[SUMMARY OF FINDINGS]].
+
+In Feng et al.'s work on long-tailed object detection, they explore training classification models on highly-similar objects, a similar challenge to that conducted in this paper.  [[SUMMARY OF APPROACH]]. [[SUMMARY OF FINDINGS]]
+
+Carpentier et al. use a self-collected dataset to a very similar problem: tree detection through bark. [[SUMMARY OF APPROACH]]. [[SUMMARY OF FINDINGS]].
+
+Fricker et al. also attempts to classify trees, however from an aerial perspective instead of the profile perspective taken in this paper. [[SUMMARY OF APPROACH]]. [[SUMMARY OF FINDINGS]]
 
 %------------------------------------------------------------------------
 \section{Dataset}
 
-This paper develops a novel dataset of high-fidelity tree photographs, taken in profile perspective. These photographs are compiled from images scraped from the internet and augmented with reflections and random croppings of each image. All images are center-cropped and scaled for use in a deep learning model. Lastly, the dataset is filtered, using a pretrained deep learning model, to only those images with high likelihood of being trees. 
+This paper develops a novel dataset of high-fidelity tree photographs, taken in profile perspective. The species included are the seven most common species of tree used in silvopasture in the southeastern US: Black Locust, Black Walnut, Honey Locust, Loblolly Pine, Northern Red Oak, Pecan, Chinese Chestnut. 
+
+I compile these photographs from images scraped from the internet and augmented with reflections and random croppings of each image. All images are center-cropped and scaled for use in a deep learning model. Lastly, the dataset is filtered, using a pre-trained deep learning model, to only those images with high likelihood of being trees. 
+
 
 %-------------------------------------------------------------------------
 \subsection{Image scraping}
 
-PLACEHOLDER
+I use three data sources to generate a dataset of tree images: the Harvard Arboretum Plant Image database [[CITE]], the Arbor Day Foundation website landing page for each tree [[CITE]], and the results of Microsoft Bing image searches for each tree species of interest. I also evaluated BarkNet, a dataset of close-up photographs of tree bark supporting a tree-bark identification model, however, this dataset did not contain any of the species of interest in this project.
+
+I developed website-specific python codes to scrape and download images of each tree species from each source. I downloaded all available images from the Harvard Arboretum and Arbor Day sources for each of the species of interest. And for the results of my Bing Image searches, I downloaded all of the first [[300 now, will be 1000]] images that were not protected from python code web access. I use Bing image search instead of Google image search because of recent changes in Google’s website layout that make web scraping more difficult.
+
+This results in a preliminary dataset of [[XXX]] images, detailed below.
 
 \begin{table}
    \begin{center}
@@ -113,42 +132,48 @@ Total & \\
 %-------------------------------------------------------------------------
 \subsection{Dataset augmentation}
 
-PLACEHOLDER
+I augment the dataset with a reflection of each image about its vertical axis. I do not include horizontal and diagonal reflections because all tree images classified with this model are expected to be up-right. I also augment the dataset with [[3]] croppings of each image at [[3]] different relative sizes, [[10%, 25%, and 50%]]. The centroid of each cropping is selected at random from the set of all centroids that allow the full crop region to lie within the photograph.
+
+This results in a dataset of [[XXX]] images.
+
+In a future iteration of this work, I will also consider augmenting my dataset with hue and value-shifted images, and fooling images [[CITE]].
 
 %-------------------------------------------------------------------------
 \subsection{Image cropping and scaling}
 
-PLACEHOLDER
-
-\begin{table}
-\begin{center}
-\begin{tabular}{|l|c|c|}
-\hline
-& N (\%) transformed & Mean \% transformed \\
-\hline\hline
-Cropping & & \\
-Upscaling & & \\
-Downscaling & & \\
-\hline
-\end{tabular}
-\end{center}
-\caption{Image cropping and scaling transformations}
-\end{table}
+I center and scale all images to the same shape and size for use in a deep learning model. I first upscale all images to the maximum image size in the dataset. I next center-crop each image, taking the largest square within the image with centroid at the image center. And finally I downscale all images to [[32x32]] pixels to improve the speed and efficiency of my model.
 
 %-------------------------------------------------------------------------
-\subsection{Image filtering with neural nets}
+\subsection{Dataset filtering}
 
-PLACEHOLDER
+Lastly, I filter the dataset to only include, with high likelihood, profile-perspective photographs of trees. I choose to filter my dataset because each of my data sources may include drawings of trees or images loosely related to trees (e.g., a table made from the wood of a black walnut tree). The former is more of a concern in the Harvard Arboretum and Arbor Day Foundation datasets, and both the former and latter are concerns in the results of Bing image searches. My dataset also includes random croppings of all images, which may not include any component of a tree and I choose to filter these croppings too.
+
+I filter my dataset by running a pre-trained deep neural net classifier on my images and only keeping those images whose prediction probability for the tree class exceeded a threshold of [[TBD]]. I choose to use the [[ResNET]] model for this filtering, and I scale all images to [[3xYxY]] pixels to use the model on my images. I only require scaling images because both my dataset and the dataset used to train ResNET use images with equal height and width. 
+
+I include a histogram of tree class predictions for all images in my database below. This filtering removes [[XX]] images from my dataset and results in a final dataset of [[XX]] images.
 
 %-------------------------------------------------------------------------
 \section{Technical approach}
 
-PLACEHOLDER
+In this paper I aim to train a model with the lowest Top-1 misclassification error. This metric best aligns with ultimate objective of this model, which is to make the best tree species prediction from an image taken on a phone while on a silvopasture operation. For robustness, I also evaluate Top-5 misclassification error, precision, recall and F2 scores of predictions across the models I construct. 
+
+In selecting the highest-performing model, I consider three categories of models: baseline models, deep convolutional neet net models, and transfer learning models. 
+
+I first train four baseline models. These models serve as a standard against which I can aim to improve classification error through the use of deep convolutional neural networks. The models I consider are K-nearest neighbors, multivariate logistic regression, support vector machine classification, and a simple, fully connected neural net. I optimize the hyperparameters associated with each of these models through a grid search approach. 
+
+I next optimize three deep convolutional neural net models. These models are the target group of models from which I intended to generate tree classifications from images. I consider structures similar to three of the most recognizeable high-performing CNNs: VGGNet, GoogLeNET, and ResNET [[CITE]]. I optimize the hyperparameters associated with each of these models through a grid search approach.
+
+Lastly, I implement transfer-learning techniques to train the final fully connected layers of the three high-performing models mentioned above: VGGNet, GoogLeNET, and ResNET. In these models, I rescale my tree image dataset to be compatible with each model’s inputs, utilize the pre-trained convolutional layers in each model, and train only the final fully connected layers, maintaining the same dimensions of the original table.
+
+My model selection is based on the highest performing model among those described in this section.
+
 
 %-------------------------------------------------------------------------
 \section{Preliminary results}
 
-PLACEHOLDER
+Describe quantitative evaluation results obtained thus far. Results/Evaluation: The report should contain a quantitative evaluation of the baseline method(s) described in the method section. The quantitative evaluation results should be in the form of figures or tables. All evaluation results should contain metrics other than loss values.
+
+After tuning each of the baseline models, I find that [[MODEL]] results in the lowest Top-1 misclassification error. This performance is [[XXX]] percentage points lower than predictions made at random. The next highest-performing model was [[MODEL]], and the lowest-performing model was [[MODEL]]. Results are included below.
 
 \begin{table}
    \begin{center}

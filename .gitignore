@@ -14,7 +14,7 @@ etc/
 *.brf
 *.fls
 *.log
-*.sync*
+*.synctex.gz
 *.tex
 
 # other ignores
