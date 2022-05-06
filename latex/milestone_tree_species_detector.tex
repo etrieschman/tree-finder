@@ -1,0 +1,177 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+\usepackage{cvpr}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% Include other packages here, before hyperref.
+
+% If you comment hyperref and then uncomment it, you should delete
+% egpaper.aux before re-running latex.  (Or just hit 'q' on the first latex
+% run, let it finish, and you should be clear).
+\usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
+
+% \cvprfinalcopy % *** Uncomment this line for the final submission
+
+\def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+% Pages are numbered in submission mode, and unnumbered in camera-ready
+\ifcvprfinal\pagestyle{empty}\fi
+\begin{document}
+
+%%%%%%%%% TITLE
+\title{Tree species detection model for agroforestry}
+
+\author{Erich Trieschman\\
+Stanford University, Department of Statistics\\
+Institution1 address\\
+{\tt\small etriesch@stanford.edu}
+% For a paper whose authors are all at the same institution,
+% omit the following lines up until the closing ``}''.
+% Additional authors and addresses can be added with ``\and'',
+% just like the second author.
+% To save space, use either the email address or home page, not both
+% \and
+% Second Author\\
+% Institution2\\
+% First line of institution2 address\\
+% {\tt\small secondauthor@i2.org}
+}
+
+\maketitle
+%\thispagestyle{empty}
+
+%%%%%%%%% BODY TEXT
+\section{Introduction}
+
+Trees are a large carbon pool for our planet. They play a vital role in offseting anthropogenic carbon emissions and attenuating the effects of climate change. We can grow this pool through afforestation and deferred deforestation, oftentimes supported through carbon offset payments by sectors emitting carbon to the landowners growing these forests. \cite{Alpher03,Alpher02,Authors14}
+
+One high-potential opportunity for afforestation is through the transition of pastureland operations to silvopasture operations. Silvopasture is simply the agricultural practice of combining tree cropping with livestock management. 
+
+In order for a payment system like this to work, we need a highly accurate estimate of the amount of carbon stored in trees. Fortunately, decades of research has been invested into tree growth projections and today, allometric equations are readily available for many tree species,  which can accurately estimate above and below-ground tree biomass as a function of tree height, tree diameter, species, and local climate. 
+
+This research develops a novel dataset of tree photographs and trains a deep learning model to identify tree species from images in the silvopasture setting. These tools will be combined with a broader suite of tools being developed to accurately estimate tree carbon from phone-based measurements to enable carbon payments on agricultural operations transitioning to silvopasture. In the future, these phone-based measurements will be used to augment and improve the models developed in this paper.
+
+%-------------------------------------------------------------------------
+\subsection{Problem statement}
+
+In this paper I compile a novel dataset of high-fidelity tree photographs, taken in profile perspective. The dataset contains classified images of the 7 most common trees used in silvopasture in the southeastern US, where pilot projects for this silvopasture transition are underway. I then train a deep learning model to predict tree species from profile-vew tree photographs
+
+
+%------------------------------------------------------------------------
+\section{Dataset}
+
+This paper develops a novel dataset of high-fidelity tree photographs, taken in profile perspective. These photographs are compiled from images scraped from the internet and augmented with reflections and random croppings of each image. All images are center-cropped and scaled for use in a deep learning model. Lastly, the dataset is filtered, using a pretrained deep learning model, to only those images with high likelihood of being trees. 
+
+%-------------------------------------------------------------------------
+\subsection{Image scraping}
+
+PLACEHOLDER
+
+\begin{table}
+   \begin{center}
+   \begin{tabular}{|l|c|}
+   \hline
+   & N \\
+   \hline\hline
+   Harvard Arboretum & \\
+   Arbor Day Foundation & \\
+   Bing image search & \\
+   \hline\hline
+   Total & \\
+   \hline
+   \end{tabular}
+   \end{center}
+   \caption{Number of images scraped from each data source}
+   \end{table}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline
+& N \\
+\hline\hline
+Black Locust & \\
+Black Walnut & \\
+Honey Locust & \\
+Loblolly Pine & \\
+Northern Red Oak & \\
+Pecan & \\
+Chinese Chestnut & \\
+\hline\hline
+Total & \\
+\hline
+\end{tabular}
+\end{center}
+\caption{Number of images scraped for each tree species}
+\end{table}
+
+%-------------------------------------------------------------------------
+\subsection{Dataset augmentation}
+
+PLACEHOLDER
+
+%-------------------------------------------------------------------------
+\subsection{Image cropping and scaling}
+
+PLACEHOLDER
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+& N (\%) transformed & Mean \% transformed \\
+\hline\hline
+Cropping & & \\
+Upscaling & & \\
+Downscaling & & \\
+\hline
+\end{tabular}
+\end{center}
+\caption{Image cropping and scaling transformations}
+\end{table}
+
+%-------------------------------------------------------------------------
+\subsection{Image filtering with neural nets}
+
+PLACEHOLDER
+
+%-------------------------------------------------------------------------
+\section{Technical approach}
+
+PLACEHOLDER
+
+%-------------------------------------------------------------------------
+\section{Preliminary results}
+
+PLACEHOLDER
+
+\begin{table}
+   \begin{center}
+   \begin{tabular}{|l|c|c|c|}
+   \hline
+   & Top-1 & Top-5 & $F_2$ \\
+   \hline\hline
+   KNN &&& \\
+   Logistic &&& \\
+   SVM &&& \\
+   FC Net &&&\\
+   \hline
+   \end{tabular}
+   \end{center}
+   \caption{Preliminary performance results of baseline models}
+\end{table}
+
+
+
+
+{\small
+\bibliographystyle{ieee}
+\bibliography{egbib}
+}
+
+\end{document}
