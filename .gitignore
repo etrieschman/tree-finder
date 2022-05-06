@@ -8,14 +8,14 @@ etc/
 
 # latex
 *.aux
-.fdb*
-.bbl
-.blg
-.brf
-.fls
-.log
-.sync*
-.tex
+*.fdb*
+*.bbl
+*.blg
+*.brf
+*.fls
+*.log
+*.sync*
+*.tex
 
 # other ignores
 data/
