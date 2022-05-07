@@ -64,15 +64,15 @@ In this paper I compile a novel dataset of high-fidelity tree photographs, taken
 %------------------------------------------------------------------------
 \subsection{Related work}
 
-Image classification is a common problem solved using convolutional neural networks. [[DESCRIPTIONS OF IMAGENET, ALEXNET, VGGNET, GOOGLENET, AND RESNET]]. 
+Image classification is a common problem solved using convolutional neural networks. [[DESCRIPTIONS OF IMAGENET, ALEXNET, VGGNET, GOOGLENET, AND RESNET]] \cite{VGGNet, GoogLeNET, ResNET}. 
 
 [[PAPER]] Expanded the possibilities of using pretrained models in the described frameworks for use in more targeted settings. [[SUMMARY OF APPROACH]]. [[SUMMARY OF FINDINGS]].
 
-In Feng et al.'s work on long-tailed object detection, they explore training classification models on highly-similar objects, a similar challenge to that conducted in this paper.  [[SUMMARY OF APPROACH]]. [[SUMMARY OF FINDINGS]]
+In Feng et al.'s work on long-tailed object detection, they explore training classification models on highly-similar objects, a similar challenge to that conducted in this paper \cite{Feng_2021_ICCV}.  [[SUMMARY OF APPROACH]]. [[SUMMARY OF FINDINGS]]
 
-Carpentier et al. use a self-collected dataset to a very similar problem: tree detection through bark. [[SUMMARY OF APPROACH]]. [[SUMMARY OF FINDINGS]].
+Carpentier et al. use a self-collected dataset to a very similar problem: tree detection through bark \cite{Carpentier_2018}. [[SUMMARY OF APPROACH]]. [[SUMMARY OF FINDINGS]].
 
-Fricker et al. also attempts to classify trees, however from an aerial perspective instead of the profile perspective taken in this paper. [[SUMMARY OF APPROACH]]. [[SUMMARY OF FINDINGS]]
+Fricker et al. also attempts to classify trees, however from an aerial perspective instead of the profile perspective taken in this paper \cite{Fricker_RS_2019}. [[SUMMARY OF APPROACH]]. [[SUMMARY OF FINDINGS]]
 
 %------------------------------------------------------------------------
 \section{Dataset}
@@ -87,7 +87,7 @@ I compile these photographs from images scraped from the internet and augmented 
 
 I use three data sources to generate a dataset of tree images: the Harvard Arboretum Plant Image database [[CITE]], the Arbor Day Foundation website landing page for each tree [[CITE]], and the results of Microsoft Bing image searches for each tree species of interest. I also evaluated BarkNet, a dataset of close-up photographs of tree bark supporting a tree-bark identification model, however, this dataset did not contain any of the species of interest in this project.
 
-I developed website-specific python codes to scrape and download images of each tree species from each source. I downloaded all available images from the Harvard Arboretum and Arbor Day sources for each of the species of interest. And for the results of my Bing Image searches, I downloaded all of the first [[300 now, will be 1000]] images that were not protected from python code web access. I use Bing image search instead of Google image search because of recent changes in Google’s website layout that make web scraping more difficult.
+I developed website-specific python codes to scrape and download images of each tree species from each source. I downloaded all available images from the Harvard Arboretum and Arbor Day sources for each of the species of interest. And for the results of my Bing Image searches, I downloaded all of the first [[300 now, will be 1000]] images that were not protected from python code web access. I use Bing image search instead of Google image search because of recent changes in Google's website layout that make web scraping more difficult.
 
 This results in a preliminary dataset of [[XXX]] images, detailed below.
 
@@ -132,7 +132,7 @@ Total & \\
 %-------------------------------------------------------------------------
 \subsection{Dataset augmentation}
 
-I augment the dataset with a reflection of each image about its vertical axis. I do not include horizontal and diagonal reflections because all tree images classified with this model are expected to be up-right. I also augment the dataset with [[3]] croppings of each image at [[3]] different relative sizes, [[10%, 25%, and 50%]]. The centroid of each cropping is selected at random from the set of all centroids that allow the full crop region to lie within the photograph.
+I augment the dataset with a reflection of each image about its vertical axis. I do not include horizontal and diagonal reflections because all tree images classified with this model are expected to be up-right. I also augment the dataset with [[3]] croppings of each image at [[3]] different relative sizes, [[10\%, 25\%, and 50\%]]. The centroid of each cropping is selected at random from the set of all centroids that allow the full crop region to lie within the photograph.
 
 This results in a dataset of [[XXX]] images.
 
@@ -161,9 +161,9 @@ In selecting the highest-performing model, I consider three categories of models
 
 I first train four baseline models. These models serve as a standard against which I can aim to improve classification error through the use of deep convolutional neural networks. The models I consider are K-nearest neighbors, multivariate logistic regression, support vector machine classification, and a simple, fully connected neural net. I optimize the hyperparameters associated with each of these models through a grid search approach. 
 
-I next optimize three deep convolutional neural net models. These models are the target group of models from which I intended to generate tree classifications from images. I consider structures similar to three of the most recognizeable high-performing CNNs: VGGNet, GoogLeNET, and ResNET [[CITE]]. I optimize the hyperparameters associated with each of these models through a grid search approach.
+I next optimize three deep convolutional neural net models. These models are the target group of models from which I intended to generate tree classifications from images. I consider structures similar to three of the most recognizeable high-performing CNNs: VGGNet, GoogLeNET, and ResNET \cite{VGGNet, GoogLeNET, ResNET}. I optimize the hyperparameters associated with each of these models through a grid search approach.
 
-Lastly, I implement transfer-learning techniques to train the final fully connected layers of the three high-performing models mentioned above: VGGNet, GoogLeNET, and ResNET. In these models, I rescale my tree image dataset to be compatible with each model’s inputs, utilize the pre-trained convolutional layers in each model, and train only the final fully connected layers, maintaining the same dimensions of the original table.
+Lastly, I implement transfer-learning techniques to train the final fully connected layers of the three high-performing models mentioned above: VGGNet, GoogLeNET, and ResNET. In these models, I rescale my tree image dataset to be compatible with each model's inputs, utilize the pre-trained convolutional layers in each model, and train only the final fully connected layers, maintaining the same dimensions of the original table.
 
 My model selection is based on the highest performing model among those described in this section.
 
