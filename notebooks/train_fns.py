@@ -47,7 +47,7 @@ def train_model(
                 running_num += inputs.size(0)
                 running_loss += loss.item() * inputs.size(0)
                 running_corrects += torch.sum(preds == labels.data)
-                acc_history[phase].append(running_corrects / running_num)
+                acc_history[phase].append((running_corrects / running_num).cpu())
                 data_bar.set_description(
                     '{} epoch: [{}/{}] Loss: {:.4f} ACC@1: {:.2f}%'
                     .format(phase, epoch, epochs, running_loss / running_num, 
