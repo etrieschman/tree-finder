@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
 def set_plt_settings():
     plt.rcParams.update({'font.size': 18})
@@ -14,18 +15,19 @@ def set_plt_settings():
     plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
     plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
 
-    
-
-def show_image_batch(img_list, title=None):
+def show_image_batch(img_list, mean, std, title=None):
     num = len(img_list)
     fig = plt.figure(figsize=(30, 30))
     for i in range(num):
-        ax = fig.add_subplot(1, num, i+1)
-        ax.imshow(img_list[i].numpy().transpose([1,2,0]))
-        ax.set_title(title[i])
-    #hide x-axis
-    ax.get_xaxis().set_visible(False)
-    #hide y-axis 
-    ax.get_yaxis().set_visible(False)
+      inp = img_list[i].numpy().transpose((1, 2, 0))
+      inp = std * inp + mean
+      inp = np.clip(inp, 0, 1)
+      ax = fig.add_subplot(1, num, i+1)
+      ax.imshow(inp)
+      ax.set_title(title[i])
+      #hide x-axis
+      ax.get_xaxis().set_visible(False)
+      #hide y-axis 
+      ax.get_yaxis().set_visible(False)
 
     plt.show()
