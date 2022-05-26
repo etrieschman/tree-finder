@@ -39,3 +39,115 @@ class ResnetBinClassifier(nn.Module):
     def forward(self, x):
         out = self.model(x)
         return out
+
+# resnet 50 transfer learning model, retraining last conv layer
+class ResnetTransferClassifier(nn.Module):
+    def __init__(self, num_classes=7, retrain_last_cnn=False):
+        super().__init__()
+
+        self.model = models.resnet50(pretrained=True)
+        
+        # update final layer
+        num_ftrs = self.model.fc.in_features
+        self.model.fc = nn.Sequential(
+          nn.Linear(num_ftrs, 128),
+          nn.ReLU(inplace=True),
+          nn.Linear(128, num_classes))
+
+        if retrain_last_cnn:
+          retrain_layers = ['layer4', 'avgpool', 'fc']
+        else:
+          retrain_layers = ['avgpool', 'fc']
+
+        # freeze all but last layer
+        self.grad_state = {'unfrozen':[], 'frozen':[]}
+        for name, child in self.model.named_children():
+          if name in retrain_layers:
+            self.grad_state['unfrozen'] += [name]
+            for param in child.parameters():
+              param.requires_grad = True
+          else:
+            self.grad_state['frozen'] += [name]
+            for param in child.parameters():
+              param.requires_grad = False
+    
+    def get_grad_state(self):
+      return self.grad_state
+
+    def forward(self, x):
+        out = self.model(x)
+        return out
+
+
+# convnext small, retraining last fully connected layer
+class ConvnextTransferClassifier(nn.Module):
+    def __init__(self, num_classes=7):
+        super().__init__()
+
+        self.model = models.convnext_tiny(pretrained=True)
+        
+        # update final layer
+        num_ftrs = self.model.classifier[-1].in_features
+        self.model.classifier[-1] = nn.Sequential(
+            nn.Linear(num_ftrs, 128),
+            nn.ReLU(inplace=True),
+            nn.Linear(128, num_classes)
+        )
+
+        # freeze all but last layer
+        self.grad_state = {'unfrozen':[], 'frozen':[]}
+        for name, child in self.model.named_children():
+          if name in ['avgpool', 'classifier']:
+            self.grad_state['unfrozen'] += [name]
+            for param in child.parameters():
+              param.requires_grad = True
+          else:
+            self.grad_state['frozen'] += [name]
+            for param in child.parameters():
+              param.requires_grad = False
+    
+    def get_grad_state(self):
+      return self.grad_state
+
+    def forward(self, x):
+        out = self.model(x)
+        return out
+
+# vision transformer
+class TransformerTransferClassifier(nn.Module):
+    def __init__(self, num_classes=7, retrain_last_cnn=False):
+        super().__init__()
+
+        self.model = models.resnet50(pretrained=True)
+        
+        # update final layer
+        num_ftrs = self.model.fc.in_features
+        self.model.fc = nn.Sequential(
+          nn.Linear(num_ftrs, 128),
+          nn.ReLU(inplace=True),
+          nn.Linear(128, num_classes))
+
+        if retrain_last_cnn:
+          retrain_layers = ['layer4', 'avgpool', 'fc']
+        else:
+          retrain_layers = ['avgpool', 'fc']
+
+        # freeze all but last layer
+        self.grad_state = {'unfrozen':[], 'frozen':[]}
+        for name, child in self.model.named_children():
+          if name in retrain_layers:
+            self.grad_state['unfrozen'] += [name]
+            for param in child.parameters():
+              param.requires_grad = True
+          else:
+            self.grad_state['frozen'] += [name]
+            for param in child.parameters():
+              param.requires_grad = False
+    
+    def get_grad_state(self):
+      return self.grad_state
+
+    def forward(self, x):
+        out = self.model(x)
+        return out
+

@@ -147,9 +147,9 @@ def get_bing_imageurls(query, num_pages=1, start_page=0, per_page=75):
     
     ActualImages=[]# contains the link for Large original images, type of  image
     
-    url = f'http://www.bing.com/images/search?q={query}qft=+filterui:imagesize-large&form=IRFLTR'
-    url_II = f'http://www.bing.com/images/search?q={query}&first=1000' #qft=+filterui:imagesize-large&form=IRFLTR'
-    for n in range(1, num_pages+1):
+    # url = f'http://www.bing.com/images/search?q={query}qft=+filterui:imagesize-large&form=IRFLTR'
+    # url_II = f'http://www.bing.com/images/search?q={query}&first=1000' #qft=+filterui:imagesize-large&form=IRFLTR'
+    for n in range(0, num_pages):
         url_II = f'https://www.bing.com/images/async?q={query}&first={per_page*n+start_page}&count={per_page}'
         soup = get_soup(url_II, header)
 
