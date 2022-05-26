@@ -14,6 +14,24 @@ def make_scrape_profile():
     urllib.request.install_opener(opener)
 
 
+def get_filelist(dirName):
+    # create a list of file and sub directories 
+    # names in the given directory 
+    listOfFile = os.listdir(dirName)
+    imgs = []
+    trees = {}
+    # Iterate over all the entries
+    for entry in listOfFile:
+        # Create full path
+        fullPath = os.path.join(dirName, entry)
+        # If entry is a directory then get the list of files in this directory 
+        if os.path.isdir(fullPath):
+          trees[entry] = os.listdir(fullPath)
+        else:
+          imgs.append(entry)
+                
+    return trees
+
 # -------------------------
 # ARBOR DAY TREE SCRAPING
 def get_arbor_tree_imageurls(url, tree):

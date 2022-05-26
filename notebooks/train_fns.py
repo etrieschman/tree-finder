@@ -22,7 +22,7 @@ def train_model(
     best_acc = 0.0
     
     # loop epochs
-    acc_history = {'train':[], 'validate':[]}
+    acc_history = {'train':[], 'validate':[],'epoch_train':[], 'epoch_validate':[]}
     for epoch in range(epochs):
         # run training and validating modes
         for phase in ['train', 'validate']:
@@ -33,7 +33,6 @@ def train_model(
             # loop batches
             for inputs, labels in data_bar:
                 inputs, labels = inputs.to(device), labels.to(device)
-
                 outputs = model(inputs)
                 loss = criterion(outputs, labels)
 
@@ -50,50 +49,22 @@ def train_model(
                 acc_history[phase].append((running_corrects / running_num).cpu())
                 data_bar.set_description(
                     '{} epoch: [{}/{}] Loss: {:.4f} ACC@1: {:.2f}%'
-                    .format(phase, epoch, epochs, running_loss / running_num, 
+                    .format(phase, epoch+1, epochs, running_loss / running_num, 
                             running_corrects / running_num * 100))
 
             # update line search decay
-            if phase == 'train':
+            if (phase == 'train') & (scheduler is not None):
               scheduler.step()
 
             # tracking for best model
             epoch_loss = running_loss / dataset_sizes[phase]
             epoch_acc = running_corrects.double() / dataset_sizes[phase]
+            acc_history[f'epoch_{phase}'].append(epoch_acc.cpu())
             if phase == 'validate' and epoch_acc > best_acc:
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
     
     # load best model
-    print(f'Returning best model, with validation accuracy {best_acc}')
+    print(f'\nReturning best model, with validation accuracy {best_acc}')
     model.load_state_dict(best_model_wts)
-    return model, acc_history
-
-# def train_model(model, optimizer, loss_fn, epochs=1):
-#     model = model.to(device=device)  # move the model parameters to CPU/GPU
-#     for e in tqdm(range(epochs)):
-#         for t, (x, y) in enumerate(loader_train):
-#             model.train()  # put model to training mode
-#             x = x.to(device=device, dtype=dtype)  # move to device, e.g. GPU
-#             y = y.to(device=device, dtype=torch.long)
-            
-#             scores = model(x)
-#             loss = loss_fn # instantiate the passed loss function
-#             loss = loss(scores, y)
-
-#             # Zero out all of the gradients for the variables which the optimizer
-#             # will update.
-#             optimizer.zero_grad()
-
-#             # This is the backwards pass: compute the gradient of the loss with
-#             # respect to each  parameter of the model.
-#             loss.backward()
-
-#             # Actually update the parameters of the model using the gradients
-#             # computed by the backwards pass.
-#             optimizer.step()
-
-#             if (t % print_every == 0):
-#                 # print(f'Iteration {t}, loss = {loss.item():0.4}')
-#                 acc = check_accuracy(loader_val, model)
-#     return acc
+    return acc_history

@@ -31,3 +31,15 @@ def show_image_batch(img_list, mean, std, title=None):
       ax.get_yaxis().set_visible(False)
 
     plt.show()
+
+def plot_accs(accs):
+  '''
+  acs : a dictionary of accuracy values
+  '''
+  plt.subplots(figsize=(15, 5))
+  for k in accs.keys():
+    plt.plot(accs[k], '-o')
+  plt.legend(accs.keys(), loc='upper left')
+  plt.xlabel('iteration')
+  plt.ylabel('accuracy')
+  plt.show()

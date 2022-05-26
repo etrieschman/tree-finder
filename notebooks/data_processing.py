@@ -1,4 +1,9 @@
 import torchvision.transforms as T
+from torch.utils.data import DataLoader, sampler
+
+# constants
+IMAGE_DIM = 224
+MEAN, STD = [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
 
 
 def define_transforms(scale_up, crop, scale_out, mean, std):
@@ -27,3 +32,33 @@ def define_transforms(scale_up, crop, scale_out, mean, std):
                                                 T.Normalize(mean, std)])
   
   return transforms
+
+
+def make_dataloaders(dataset, pct_train, pct_val, sampleN):
+  N = len(dataset)
+  # make dictionary of sizes
+  ds_sizes = {'all': N,
+            'train': int(N * pct_train),
+            'validate': int(N * pct_val),
+            'test': N - int(N * (pct_train + pct_val)),
+            'sample': sampleN}
+  print('dataloader sizes:', ds_sizes)
+
+  # make loaders
+  dataloaders = {}
+  dataloaders['all'] = DataLoader(dataset=dataset, batch_size=N, shuffle=False)
+  dataloaders['train'] = DataLoader(dataset=dataset, batch_size=32,
+                                    sampler=sampler.SubsetRandomSampler(range(ds_sizes['train'])))
+  dataloaders['validate'] = DataLoader(dataset=dataset, batch_size=32,
+                                      sampler=sampler.SubsetRandomSampler(
+                                          range(ds_sizes['train'], ds_sizes['train']+ds_sizes['validate'])))
+  dataloaders['test'] = DataLoader(dataset=dataset, batch_size=32,
+                                  sampler=sampler.SubsetRandomSampler(
+                                      range(ds_sizes['train']+ds_sizes['validate'], N)))
+  dataloaders['sample'] = DataLoader(dataset=dataset, batch_size=sampleN, shuffle=True)
+
+  return dataloaders, ds_sizes
+
+
+
+  
