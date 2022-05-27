@@ -1,0 +1,13 @@
+blacklocust,blackwalnut,northernredoak,loblollypine,chinesechestnut,honeylocust,pecan,step,set
+68,0,0,0,0,0,0,filtered,all
+0,0,0,0,0,0,0,filtered,bing
+0,0,0,0,0,0,0,filtered,arborday
+0,0,0,0,0,0,0,filtered,harvard
+4840,5208,4632,3960,5296,4008,4888,augmented,all
+4496,4504,4248,3904,3736,4008,4728,augmented,bing
+0,32,56,56,24,0,48,augmented,arborday
+344,672,328,0,1536,0,112,augmented,harvard
+4840,5208,4632,3960,5296,4008,4888,original,all
+4496,4504,4248,3904,3736,4008,4728,original,bing
+0,32,56,56,24,0,48,original,arborday
+344,672,328,0,1536,0,112,original,harvard
