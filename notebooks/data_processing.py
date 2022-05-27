@@ -45,21 +45,18 @@ def define_transforms(scale_up, crop, scale_out, mean, std, mirror=True, randomc
   return transforms
 
 
-def get_idx_of_classified_trees(classifier, loader, threshold, device):
+def get_tree_class_likelihood(classifier, loader, device):
     '''assumes the second (of two) class is the tree score'''
-    flag = []
+    likelihood = []
     # go through all images
     for X, y in tqdm(loader):
       X.to(device=device)
       scores = classifier(X)
       pct = F.softmax(scores, dim=1)
       pct = pct[:,1].detach().cpu().numpy()
-      flag += (pct >= threshold).tolist()
+      likelihood += (pct).tolist()
 
-    print(f'\nimages meeting threshold ({threshold}): {sum(flag)} ({sum(flag)/len(flag):0.2%})')
-
-    idxs = (np.arange(0, len(flag))[flag]).tolist()
-    return idxs
+    return likelihood
 
 
 def train_val_test_dataset(dataset, subset, test_split, val_split, seed):
