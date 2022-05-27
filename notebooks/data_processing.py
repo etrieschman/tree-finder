@@ -1,7 +1,10 @@
 import torchvision.transforms as T
+import torch.nn.functional as F
 from torch.utils.data import DataLoader, sampler
 from torch.utils.data import Subset
 from sklearn.model_selection import train_test_split
+from tqdm import tqdm
+import numpy as np
 
 # constants
 IMAGE_DIM = 224
@@ -42,10 +45,32 @@ def define_transforms(scale_up, crop, scale_out, mean, std, mirror=True, randomc
   return transforms
 
 
-def train_val_test_dataset(dataset, test_split, val_split, seed):
+def get_idx_of_classified_trees(classifier, loader, threshold, device):
+    '''assumes the second (of two) class is the tree score'''
+    flag = []
+    # go through all images
+    for X, y in tqdm(loader):
+      X.to(device=device)
+      scores = classifier(X)
+      pct = F.softmax(scores, dim=1)
+      pct = pct[:,1].detach().cpu().numpy()
+      flag += (pct >= threshold).tolist()
+
+    print(f'\nimages meeting threshold ({threshold}): {sum(flag)} ({sum(flag)/len(flag):0.2%})')
+
+    idxs = (np.arange(0, len(flag))[flag]).tolist()
+    return idxs
+
+
+def train_val_test_dataset(dataset, subset, test_split, val_split, seed):
+    
+    if subset is None:
+      idxs = list(range(len(dataset)))
+    else:
+      idxs = subset
+    
     # split off test data first
-    trainval_idx, test_idx = train_test_split(
-      list(range(len(dataset))), test_size=test_split, random_state=seed)
+    trainval_idx, test_idx = train_test_split(idxs, test_size=test_split, random_state=seed)
     # split remaining train/val indexes
     train_idx, val_idx = train_test_split(
       list(range(len(trainval_idx))), test_size=val_split, random_state=seed)
@@ -53,7 +78,7 @@ def train_val_test_dataset(dataset, test_split, val_split, seed):
     train_idx = [trainval_idx[i] for i in train_idx]
     val_idx = [trainval_idx[j] for j in val_idx]
     datasets = {
-      'all': dataset,
+      'all': Subset(dataset, idxs),
       'train': Subset(dataset, train_idx),
       'validate': Subset(dataset, val_idx),
       'test': Subset(dataset, test_idx)
@@ -62,15 +87,16 @@ def train_val_test_dataset(dataset, test_split, val_split, seed):
 
 
 def make_dataloaders(
-  dataset, test_split=0.10, val_split=0.25, sampleN=4, batch_size=32, seed=None):
+  dataset, subset, test_split=0.10, val_split=0.25, sampleN=4, 
+  batch_size=32, seed=None):
   
   N = len(dataset)
   # split into train/val
-  datasets = train_val_test_dataset(dataset, test_split, val_split, seed)
+  datasets = train_val_test_dataset(dataset, subset, test_split, val_split, seed)
 
   # make dataloaders
   dataloaders = {
-    k:DataLoader(datasets[k], batch_size=batch_size, shuffle=True) 
+    k:DataLoader(datasets[k], batch_size=batch_size, shuffle=False) 
     for k in ['all', 'train','validate','test']
     }
 

@@ -26,11 +26,11 @@ def get_filelist(dirName):
         fullPath = os.path.join(dirName, entry)
         # If entry is a directory then get the list of files in this directory 
         if os.path.isdir(fullPath):
-          trees[entry] = os.listdir(fullPath)
-        else:
-          imgs.append(entry)
+          img_list = os.listdir(fullPath)
+          trees[entry] = img_list
+          imgs += [entry + '-' + img for img in img_list]
                 
-    return trees
+    return trees, imgs
 
 # -------------------------
 # ARBOR DAY TREE SCRAPING
