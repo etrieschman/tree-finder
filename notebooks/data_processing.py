@@ -11,7 +11,7 @@ IMAGE_DIM = 224
 MEAN, STD = [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
 
 
-def define_transforms(scale_up, crop, scale_out, mean, std, mirror=True, randomcrop=True):
+def define_transforms(scale_up, crop, scale_out, mean, std, mirror=True, randomcrop=None):
   # define transformations
   transforms = {}
   transforms['orig'] = T.Compose([T.Resize(scale_up), T.CenterCrop(crop), 
@@ -26,8 +26,8 @@ def define_transforms(scale_up, crop, scale_out, mean, std, mirror=True, randomc
                           T.Normalize(mean, std)])
 
   # include a random cropping (flipped and unflipped) at three crop sizes
-  if randomcrop:
-    for pct in [10, 25, 50]:
+  if randomcrop is not None:
+    for pct in randomcrop:
       scale_param = int(1 / (pct*0.01))
       transforms[f'crop{pct}'] = T.Compose([T.Resize(scale_param*scale_up), 
                                             T.RandomResizedCrop(crop),
