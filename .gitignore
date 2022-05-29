@@ -18,7 +18,15 @@ etc/
 *.tex
 
 # other ignores
-data/
+data/images_bin/
+data/images_spec/
+models/ConvNextClassifierFC.pt
+models/ResnetClassifierFC.pt
+models/SoftmaxClassifier.pt
+models/HingeClassifier.pt
+models/ThreeLayerCNN.pt
+models/TwoLayerFC.pt
+models/TransformerClassifierFC.pt
 
 # notebook checkpoints
 .ipynb_checkpoints

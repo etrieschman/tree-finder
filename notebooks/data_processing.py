@@ -50,7 +50,7 @@ def get_tree_class_likelihood(classifier, loader, device):
     likelihood = []
     # go through all images
     for X, y in tqdm(loader):
-      X.to(device=device)
+      X = X.to(device=device)
       scores = classifier(X)
       pct = F.softmax(scores, dim=1)
       pct = pct[:,1].detach().cpu().numpy()
