@@ -15,7 +15,7 @@ class Flatten(nn.Module):
 
 def train_model(
   model, criterion, optimizer, scheduler, 
-  dataloaders, dataset_sizes, device, epochs=3):
+  dataloaders, dataset_sizes, device, model_path, epochs=3):
     
     # track dictionary for best model
     best_model_wts = copy.deepcopy(model.state_dict())
@@ -54,7 +54,7 @@ def train_model(
 
             # update line search decay
             if (phase == 'train') & (scheduler is not None):
-              scheduler.step()
+                scheduler.step()
 
             # tracking for best model
             epoch_loss = running_loss / dataset_sizes[phase]
@@ -63,6 +63,7 @@ def train_model(
             if phase == 'validate' and epoch_acc > best_acc:
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
+                torch.save(model.state_dict(), model_path + 'temp/best_current_model.pt')
     
     # load best model
     print(f'\nReturning best model, with validation accuracy {best_acc}')
