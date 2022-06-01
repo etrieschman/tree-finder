@@ -21,7 +21,7 @@ def set_plt_settings():
     plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
     plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
 
-def show_image_batch(img_list, mean=0, std=1, title=None, ncol=4, figdim=20):
+def show_image_batch(img_list, mean=0, std=1, title=None, ncol=4, figdim=20, savetofile=None):
     N = len(img_list)
     nrow = np.ceil(N/ncol).astype(int)
     fig = plt.figure(figsize=(figdim, figdim//nrow))
@@ -36,7 +36,10 @@ def show_image_batch(img_list, mean=0, std=1, title=None, ncol=4, figdim=20):
         ax.set_title(title[i])
       ax.get_xaxis().set_visible(False)
       ax.get_yaxis().set_visible(False)
-
+    
+    if savetofile is not None:
+        plt.savefig(savetofile, bbox_inches='tight')
+        print('image saved to file:', savetofile)
     plt.show()
 
 def plot_accs(accs):
