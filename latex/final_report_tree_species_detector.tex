@@ -2,8 +2,8 @@
 
 %%%%%%%%% PAPER TYPE  - PLEASE UPDATE FOR FINAL VERSION
 % \usepackage[review]{cvpr}      % To produce the REVIEW version
-\usepackage{cvpr}              % To produce the CAMERA-READY version
-%\usepackage[pagenumbers]{cvpr} % To force page numbers, e.g. for an arXiv version
+% \usepackage{cvpr}              % To produce the CAMERA-READY version
+\usepackage[pagenumbers]{cvpr} % To force page numbers, e.g. for an arXiv version
 
 % Include other packages here, before hyperref.
 \usepackage{graphicx}
@@ -11,6 +11,7 @@
 \usepackage{amssymb}
 \usepackage{booktabs}
 \usepackage{tablefootnote}
+\usepackage{booktabs}
 \graphicspath{{"../results/"}}
 
 % It is strongly recommended to use hyperref, especially for the review version.
@@ -47,11 +48,6 @@
 \author{Erich Trieschman\\
 Stanford University, Department of Statistics\\
 {\tt\small etriesch@stanford.edu}
-% For a paper whose authors are all at the same institution,
-% omit the following lines up until the closing ``}''.
-% Additional authors and addresses can be added with ``\and'',
-% just like the second author.
-% To save space, use either the email address or home page, not both
 % \and
 % Second Author\\
 % Institution2\\
@@ -62,8 +58,11 @@ Stanford University, Department of Statistics\\
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-  Section 0: Abstract (1-2 paragraphs)
-  The abstract is required. It should contain a ~1-2 sentence summary of each major section of the paper.
+  Tree species identification can integrate with a broader suite of tools to improve the accuracty of forest carbon estimation while also reducing costs. In this paper I train a tree species classifier to support carbon measurements in the agroforestry setting. I compile a novel dataset of over 24k labeled tree images and evaluate six transfer learning models for highest performance. 
+  
+  My dataset is constructed predominantly from scraped image searches for each tree species through the Microsoft Bing search engine. I pair this dataset with scraped images of several other tree databases as well. My dataset is augmented with vertical reflections and random croppings of each image and finally filtered with a binary classification model trained to detect trees.
+  
+  I achieve a Top-1 accuracy of [[XX]] on held-out data by applying transfer learning to the [[XX]] model, training the entire last convolutional block of the model. I find this model to be better optimized for mobile-based tree species identification than other models because of its lower model parameter count. I find this final model performs best at detecting [[TREESPECIES]] with a precision and recall of XXX, respectively; it performs least well at detecting [[TREESPECIES]] with a precision and recall of XXX respectively.
 \end{abstract}
 
 %%%%%%%%% BODY TEXT
@@ -83,17 +82,15 @@ Specifically, in this paper I compile a novel dataset of high-fidelity tree phot
 \section{Related work}
 \label{sec:litreview}
 
-{(0.5-1 page): You should find existing papers, group them into categories based on their approaches, and talk about exemplary ones in each category: Discuss strengths and weaknesses. In your opinion, which approaches were clever/good? What is the state-of-the-art? Do most people perform the task by hand? You should aim to have at least 10 references in the related work. Include previous attempts by others at your problem, previous technical methods, or previous learning algorithms.}
+Image classification is a common problem solved using convolutional neural networks. Beginning in late 2012, we have experienced step changes in the performance of neural networks for image classification first with the introduction of AlexNet and later with further improvements through neural net models like VGGNet, ResNet, and GoogLeNet \cite{VGGNet, GoogLeNET, ResNET}. These latter models each incremented the field with refinements to parallelization and the ability to exploit backpropagation into deeper and deeper networks.
 
-Image classification is a common problem solved using convolutional neural networks. [[DESCRIPTIONS OF IMAGENET, ALEXNET, VGGNET, GOOGLENET, AND RESNET]] \cite{VGGNet, GoogLeNET, ResNET}. 
+Within this time period there has been a plethora of work focused on image classification, from general problems to more specific, with only limited research focused on profile-perspective tree species identification. Below I summarize some of the research focused on this problem and the methods that support it. 
 
-[[PAPER]] Expanded the possibilities of using pretrained models in the described frameworks for use in more targeted settings. [[SUMMARY OF APPROACH]]. [[SUMMARY OF FINDINGS]].
+In Feng et al.'s work on long-tailed object detection, the team explores training classification models on highly-similar objects, a similar challenge to that conducted in this paper \cite{Feng_2021_ICCV}. Feng et al. achieve increased performance via an Equilibrium Loss (EBL) and a Memory-augmented Feature Sampling (MFS) method, improving detection performance.
 
-In Feng et al.'s work on long-tailed object detection, they explore training classification models on highly-similar objects, a similar challenge to that conducted in this paper \cite{Feng_2021_ICCV}.  [[SUMMARY OF APPROACH]]. [[SUMMARY OF FINDINGS]]
+Carpentier et al. use a self-collected dataset to solve a very similar classification problem to my own: tree detection through bark images \cite{Carpentier_2018}. The team trains deep neural network models for this classification task and achieves an accuracy of over 90\% in predicting tree species for over 23 different species of trees and tree diameters. Interestingly, the team finds that increasing the number of individual trees in the training database is one of the most important factors to achieving a high accuracy score.
 
-Carpentier et al. use a self-collected dataset to a very similar problem: tree detection through bark \cite{Carpentier_2018}. [[SUMMARY OF APPROACH]]. [[SUMMARY OF FINDINGS]].
-
-Fricker et al. also attempts to classify trees, however from an aerial perspective instead of the profile perspective taken in this paper \cite{Fricker_RS_2019}. [[SUMMARY OF APPROACH]]. [[SUMMARY OF FINDINGS]]
+Fricker et al. also attempts to classify trees, however from an aerial perspective instead of the profile perspective taken in this paper \cite{Fricker_RS_2019}. The team uses field-based training data, high spatial resolution airborne hyperspectral imagery, and a convolutional neural network classifier to train a model for future detection using lower-cost input data. Fricker finds significant improvements in the accuracy of his model when using hyperspectral data over simple RGB. 
 
 %------------------------------------------------------------------------
 \section{Methods}
@@ -121,7 +118,7 @@ I provide a summary of these models in Table \ref{tab:model_desc} and describe t
   CNN & CrossEnt & 3 & False \\
   ResNet & CrossEnt & 50 & True \\
   ConvNext & CrossEnt & ``Tiny'' & True \\
-  Transformer & CrossEnt & XXX & True \\
+  Transformer & CrossEnt & 12: 16x16pix & True \\
   \hline
   \end{tabular}
   \end{center}
@@ -175,7 +172,7 @@ I compile these photographs and labels from images scraped from the internet. I 
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=.8\linewidth]{"./fig_samp_imgs.png"}
-  \caption{\label{fig:samp_imgs} Four sample images with species labels from final dataset}
+  \caption{\label{fig:samp_imgs} Sample images from final dataset}
 \end{figure}
 
 %-------------------------------------------------------------------------
@@ -206,7 +203,7 @@ This results in a preliminary dataset of 7,707 images, detailed in Table \ref{ta
    \hline
    \end{tabular}
    \end{center}
-   \caption{\label{tab:dataset_og} Number of images scraped from each data source, by species}
+   \caption{\label{tab:dataset_og} Number of images, by data source and species}
    \end{table}
 
 %-------------------------------------------------------------------------
@@ -235,11 +232,11 @@ I filter my tree species dataset by running this classifier on my images and onl
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=.8\linewidth]{"./fig_histTreeClassFilter.png"}
-  \caption{\label{fig:hist_tree_class} Histogram of tree class likelihood in tree species augmented dataset}
+  \caption{\label{fig:hist_tree_class} Histogram of tree class likelihoods}
 \end{figure}
 
 
-Details of my final tree species dataset are presented in Table \ref{tab:dataset_final}  by tree species and image source.
+Details of my final tree species dataset are presented in Table \ref{tab:dataset_final} by tree species and image source.
 
 \begin{table}[!htbp]
   \begin{center}
@@ -260,7 +257,7 @@ Details of my final tree species dataset are presented in Table \ref{tab:dataset
   \hline
   \end{tabular}
   \end{center}
-  \caption{\label{tab:dataset_final} Final tree species image dataset, after augmentation and filtering, by species and source}
+  \caption{\label{tab:dataset_final} Final tree species image dataset}
   \end{table}
 
 %------------------------------------------------------------------------
@@ -270,7 +267,7 @@ In this section I discuss my results. I start with an evaluation of the models d
 
 \subsection{Training results and model selection}
 All models I trained achieved maximum training and validation accuracy before their final training epoch. This gives me confidence that they have achieved at least local maxima, and also that I am not overfitting these models, as I find that the training accuracy does not significantly exceed validation accuracy, especially for the transfer learning models.
-I find that [[MODEL]] highest validation accuracy accross my trianing regime; I select this model for my final evaluations and for future production within tree carbon quantification apps. While ViT also performs well, its storage costs is almost four times as high as the other comparably-performing models and this may pose a limitation in the mobile app setting. My results are presented in Table \ref{tab:model_acc}
+I find that [[MODEL]] highest validation accuracy accross my trianing regime; I select this model for my final evaluations and for future production within tree carbon quantification apps. While ViT also performs well, its storage costs is almost four times as high as the other comparably-performing models and this may pose a limitation in the mobile app setting. My results are presented in Table \ref{tab:model_acc}.
 
 \begin{table}[!htbp]
   \begin{center}
@@ -279,15 +276,15 @@ I find that [[MODEL]] highest validation accuracy accross my trianing regime; I 
   \hline
   Model & Acc. train & Acc. val & N params\\
   \hline\hline
-  Softmax & & & 1,053,696 \\
-  SVM & & & 1,053,696\\
-  FCN & & & 19,268,480\\
-  CNN & & & 5,620,656\\
-  ResNetFC & & & 25,557,032\\
+  Softmax & 0.233 & 0.220 & 1,053,696 \\
+  SVM & 0.278 & 0.196 & 1,053,696\\
+  FCN & 0.284 & 0.264 & 19,268,480\\
+  CNN & 0.406 & 0.327 & 5,620,656\\
+  ResNetFC & 0.571 & 0.561 & 25,557,032\\
   \textbf{ResNet} & & & \textbf{25,557,032}\\
-  ConvNextFC & & & 28,589,128\\
+  ConvNextFC & 0.612 & 0.608 & 28,589,128\\
   ConvNext & & & 28,589,128\\
-  ViT & & & 86,567,656\\
+  ViT & 0.634 & 0.615 & 86,567,656\\
   \hline
   \end{tabular}
   \end{center}
@@ -296,29 +293,43 @@ I find that [[MODEL]] highest validation accuracy accross my trianing regime; I 
 
 \subsection{Final model evaluation}
 \subsubsection{Evaluation metrics}
-Top1 and Top2 accuracy, Confusion matrix, Precision/recall, class visualization
+Top-K accuracy scores refer to the percent of images for which the correct class was within the top K predicted scores. As my classifier only considers the seven common species of trees in agroforestry, I only consider small Ks, specifically Top-1 and Top-2 accuracy.
+
+Precision, recall, and the F1 score provide alternative methods of evaluating the predictive power of a model, capturing the relationship between the true positives, false positives, and false negatives produced by a model. They are defined as follows
+\begin{align*}
+  \textrm{Precision} &= \frac{TP}{TP + FP}\\
+  \textrm{Recall} &= \frac{TP}{TP + FN}\\
+  \textrm{F1} &= \frac{2 * \textrm{Precision} * \textrm{Recall}}{\textrm{Precision} + \textrm{Recall}}
+\end{align*}
+I report these scores for each class, and also consider the weighted average scores across all classes. A helpful way to visualize the components of these scores is with a confusion matrix. In a confusion matrix, each row of the matrix represents the instances in an actual class while each column represents the instances in a predicted class
+
+Lastly, I implement methods developed by Simonyan et al \cite{simonyan} to qualitatively visualize each of my classes as represented by the model. I do so for each class through gradient \textit{ascent}, generate an image that the network will recognize as the target class. This process follows the following optimization
+\begin{align*}
+  I^* = \arg\max_I(s_y(I) - R(I))
+\end{align*}
+where $s_y(I)$ is the score from a deep learning model for image $I$ and $R(I)$ is a regularizer (e.g., $\lambda \mid\mid I \mid\mid_2^2$).
 
 \subsubsection{Quantitative evaluation results}
 I now present the evaluation metrics for [[MODEL]], the final model I select through this research. [[mODEL]] achieves a XXXX Top-1 accuracy and a XXXX Top-2 accuracy. In a field setting, this implies that farmers using this tooling could identify their photographed trees XX out of 100 times, and could narrow their choice to two tree species XX out of 100 times. 
 
-Next I consider the results of a confusion matrix for these predictions in Table \ref{tab:confusion}. Here I observe that [[MODEL]] is most effective at identifying [[species]] and least at identifying [[species]]. I also consider the results of class-wise precision and recall scores, presented in Table \ref{tab:recall}. Here I observe FINDINGS
+Next, I consider the results of class-wise precision and recall scores, presented in Table \ref{tab:recall}. Here I observe FINDINGS. I also evaluate the results of a confusion matrix for these predictions in Table \ref{tab:confusion}. Here I observe that [[MODEL]] is most effective at identifying [[species]] and least at identifying [[species]]. 
 
 \begin{table}[!htbp]
   \begin{center}
     \small
-  \begin{tabular}{|l|r|r|r|r|r|r|r|}
-  \hline
-  & BL & BW & HL & LP & O & P & C\\
-  \hline\hline
-  BL& 3587 & 3325 & 0 & 262\\
-   BW & 3845 & 3327 & 23 & 495\\
-   HW & 2925 & 2925 & 0 & 0\\
-   LP & 3106 & 3059 & 47 & 0\\
-   O & 3535 & 3236 & 42 & 257\\
-   P & 3875 & 3754 & 42 & 79\\
-   C & 4071 & 2905 & 17 & 149\\
-  \hline
-  \end{tabular}
+    \begin{tabular}{lrrrrrrr}
+      \toprule
+      {} &     BL &     BW &      C &     HL &     LP &      O &      P \\
+      \midrule
+      BL &  71.43 &  14.29 &   0.00 &  14.29 &   0.00 &   0.00 &   0.00 \\
+      BW &  25.00 &  62.50 &   0.00 &   0.00 &  12.50 &   0.00 &   0.00 \\
+      C  &   0.00 &  28.57 &  57.14 &   0.00 &  14.29 &   0.00 &   0.00 \\
+      HL &  16.67 &  33.33 &   0.00 &  33.33 &   0.00 &   0.00 &  16.67 \\
+      LP &   0.00 &  14.29 &   0.00 &   0.00 &  85.71 &   0.00 &   0.00 \\
+      O  &  14.29 &   0.00 &  14.29 &  14.29 &   0.00 &  57.14 &   0.00 \\
+      P  &  12.50 &   0.00 &  25.00 &   0.00 &   0.00 &  12.50 &  50.00 \\
+      \bottomrule
+      \end{tabular}
   \end{center}
   \caption{\label{tab:confusion} Confusion matrix for [[MODEL]]-predicted images from test dataset. \textbf{Abbreviations:} BL=Black Locust, BW=Black Walnut, HL=Honey Locust, LP=Loblolly Pine, O=Northern Red Oak, P=Pecan, C=Chinese Chestnut}
   \end{table}
@@ -327,30 +338,45 @@ Next I consider the results of a confusion matrix for these predictions in Table
   \begin{table}[!htbp]
     \begin{center}
       \small
-    \begin{tabular}{|l|r|r|r|}
-    \hline
-    & Precision & Recall & F2\\
-    \hline\hline
-    BL& 3587 & 3325 & 0 \\
-     BW & 3845 & 3327 & \\
-     HW & 2925 & 2925 &\\
-     LP & 3106 & 3059 & \\
-     O & 3535 & 3236 & 42 \\
-     P & 3875 & 3754 & 42 \\
-     C & 4071 & 2905 & 17 \\
-    \hline
-    \hline\hline
-   Overall & 24944 & 22531 & 171 \\
-   \hline
-    \end{tabular}
+      \begin{tabular}{lrrrr}
+        \toprule
+        {} &  precision &  recall &  f1-score &  support \\
+        \midrule
+        BL           &      0.500 &   0.714 &     0.588 &      7.0 \\
+        BW           &      0.455 &   0.625 &     0.526 &      8.0 \\
+        C            &      0.571 &   0.571 &     0.571 &      7.0 \\
+        HL           &      0.500 &   0.333 &     0.400 &      6.0 \\
+        LP           &      0.750 &   0.857 &     0.800 &      7.0 \\
+        O            &      0.800 &   0.571 &     0.667 &      7.0 \\
+        P            &      0.800 &   0.500 &     0.615 &      8.0 \\
+        weighted avg &      0.628 &   0.600 &     0.598 &     50.0 \\
+        \bottomrule
+        \end{tabular}
     \end{center}
-    \caption{\label{tab:recall} Precision and recall [[MODEL]]-predicted images from test dataset \textbf{Abbreviations:} BL=Black Locust, BW=Black Walnut, HL=Honey Locust, LP=Loblolly Pine, O=Northern Red Oak, P=Pecan, C=Chinese Chestnut}
+    \caption{\label{tab:recall} Precision and recall for [[MODEL]]-predicted images from test dataset \textbf{Abbreviations:} BL=Black Locust, BW=Black Walnut, HL=Honey Locust, LP=Loblolly Pine, O=Northern Red Oak, P=Pecan, C=Chinese Chestnut}
     \end{table}
 
 \subsubsection{Qualitative evaluation metrics}
-Highest-scoring images and their scores
-Lowest scoring images and their scores
-Class visualizations
+To assist with visual interpretability and to qualitatively understand the performance of my final model, below I include images and scores of the highest-scoring images in my test dataset in Figure \ref{fig:top_imgs}, images and scores of the lowest-scoring images in my test dataset in Figure \ref{fig:bott_imgs}, and class visualizations for each class, as described above in Figure \ref{fig:class_vis}.
+[[INTERPRETATION]]
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=.8\linewidth]{"./fig_top_img.png"}
+  \caption{\label{fig:top_imgs} Highest scoring images in correct class}
+\end{figure}
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=.8\linewidth]{"./fig_bott_img.png"}
+  \caption{\label{fig:bott_imgs} Lowest scoring images in correct class}
+\end{figure}
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=.8\linewidth]{"./fig_class_vis.png"}
+  \caption{\label{fig:class_vis} Synthetic visualizations for each class}
+\end{figure}
 
 
 
@@ -361,32 +387,19 @@ Class visualizations
 %------------------------------------------------------------------------
 \section{Conclusion and future work}
 \label{sec:conclusion}
-Section 6: Conclusion/Future Work (1-3 paragraphs)
+Tree species identification can integrate with a broader suite of tools to improve the accuracty of forest carbon estimation while also reducing costs. In this paper I train a tree species classifier to support carbon measurements in the agroforestry setting. I compile a novel dataset of over 24k labeled tree images and evaluate six transfer learning models for highest performance. My dataset is constructed from scraped web images, which I augment with vertical reflections and random croppings of each image and finally filtered with a binary classification model trained to detect trees.
+  
+I achieve a Top-1 accuracy of [[XX]] on held-out data by applying transfer learning to the [[XX]] model, training the entire last convolutional block of the model. I find this model to be better optimized for mobile-based tree species identification than other models because of its lower model parameter count. I find this final model performs best at detecting [[TREESPECIES]] with a precision and recall of XXX, respectively; it performs least well at detecting [[TREESPECIES]] with a precision and recall of XXX respectively.
 
-Summarize your report and reiterate key points. Which algorithms were the highest-performing? Why do you think that some algorithms worked better than others? For future work, if you had more time, more team members, or more compute, what would you explore?
+As next steps in the near-term, I intend to supplement my dataset with higher fidelity images, which will come from the app that will be using the tree species classifier on agroforestry operations. As the majority of my training data comes from image searches on the internet, I suspect that increasing the share of higher quality images will likely improve Top-1 accuracy of my models. I also plan to apply the transfer learning techniques developed above on larger models like ResNet-152 and to retrain more of the convolutional or encoder layers of the model. I was able to achieve nearly a 20 percentage point increase in Top-1 accuracy for ResNet by retraining one layer deeper into the model and would like to explore how much more performance I could achieve by going deeper still. 
 
-%------------------------------------------------------------------------
-\section{Appendices}
-\label{sec:appendix}
-Section 7: Appendices
-
-All the text in sections before this point must fit on eight (8) CVPR-style pages or less. Extra figures can go beyond the limit, but please do not put all your figures at the end just to fit the page limit. TAs will also be focusing their attention largely on the previous sections, so anything critical to your project should go in those sections, if possible. (If you are unsure of something, please feel free to make a private Ed post).
-
-This section is optional. Include additional derivations of proofs which weren’t core to the understanding of your proposed algorithm. Usually, you put equations or other details here when you don’t want to disrupt the flow of the main paper.
 
 %------------------------------------------------------------------------
 \section{Contributions and acknowledgements}
 \label{sec:contrib}
-Section 8: Contributions Acknowledgements (not part of page limit)
+This research is solo authored by Erich Trieschman and conducted entirely within the context of the Stanford course CS231N taken in the Spring Quarter of 2022. I leverage a few utility functions from homework assignments from this class as well as from tutorials provided by Pytorch \cite{PyTorch}.
 
-In this section, you must explicitly state what each person on your team did for the project. If you made use of public code (e.g. from GitHub), please provide a link to the original repo. Additionally, you must mention any non-CS231N collaborators and include a brief sentence on what they did for your project. See the AlphaGo paper’s contributions statement for an example. If you’re part of a research lab and made use of their job scheduling, containerization, or GPUs, briefly include a sentence description on this as well.
-
-
-%------------------------------------------------------------------------
-\section{References}
-\label{sec:references}
-References/Bibliography (No page limit): This section should include citations for: (1) Any papers mentioned in the related work section. (2) Papers describing algorithms that you used which were not covered in class. (3) Code or libraries you downloaded and used. This includes libraries such as scikit-learn, TensorFlow, PyTorch, etc. 
-
+All of my code, results, and the final pretrained model are available in a project repo on my GitHub, available at \url{https://github.com/etrieschman/tree-finder}
 
 %%%%%%%%% REFERENCES
 {\small
