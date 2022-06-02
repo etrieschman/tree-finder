@@ -109,7 +109,7 @@ class ConvnextTransferClassifier(nn.Module):
           # unfreeze last CNBlock if requested
           if name == 'features' and retrain_last_cnblock:
             self.grad_state['unfrozen'] += ['last cnn']
-            for param in child.layers[-1].parameters():
+            for param in child[-1][-1].parameters():
               param.requires_grad = True
     
     def get_grad_state(self):
