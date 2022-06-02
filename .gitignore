@@ -15,7 +15,6 @@ etc/
 *.fls
 *.log
 *.synctex.gz
-*.tex
 
 # other ignores
 data/images_bin/
