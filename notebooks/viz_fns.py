@@ -24,7 +24,13 @@ def set_plt_settings():
 def show_image_batch(img_list, mean=0, std=1, title=None, ncol=4, figdim=20, savetofile=None):
     N = len(img_list)
     nrow = np.ceil(N/ncol).astype(int)
-    fig = plt.figure(figsize=(figdim, figdim//nrow))
+    if nrow < ncol:
+        fs = (figdim, figdim//nrow)
+    elif nrow > ncol:
+        fs = (figdim//ncol, figdim)
+    else:
+        fs = (figdim, figdim)
+    fig = plt.figure(figsize=fs)
     r_idx = -1
     for i in range(N):
       inp = img_list[i].numpy().transpose((1, 2, 0))
@@ -135,8 +141,6 @@ def deprocess(img, should_rescale=True):
         T.Normalize(mean=[0, 0, 0], std=(1.0 / np.array(STD)).tolist()),
         T.Normalize(mean=(-np.array(MEAN)), std=[1, 1, 1]),
         T.Lambda(rescale) if should_rescale else T.Lambda(lambda x: x),
-        # T.Normalize(mean=(0,)*3, std=(255,)*3),
-        # T.ToPILImage()
     ])
     return transform(img)
 
@@ -225,15 +229,6 @@ def create_class_vis(target_y, model, class_names, dtype, **kwargs):
         if t % blur_every == 0:
             blur_image(img.data)
 
-        # Periodically show the image
-        # if t == 0 or (t + 1) % show_every == 0 or t == num_iterations - 1:
-        #     plt.imshow(deprocess(img.data.clone().cpu()))
-        #     class_name = class_names[target_y]
-        #     plt.title('%s\nIteration %d / %d' % (class_name, t + 1, num_iterations))
-        #     plt.gcf().set_size_inches(4, 4)
-        #     plt.axis('off')
-        #     plt.show()
-
-    return deprocess(img.data.cpu(), should_rescale=False)
+    return deprocess(img.data.cpu(), should_rescale=True)
 
 
