@@ -19,14 +19,15 @@ etc/
 # other ignores
 data/images_bin/
 data/images_spec/
-models/ConvNextClassifierFC.pt
-models/ConvNextClassifierOneLayer.pt
-models/ResnetClassifierFC.pt
-models/SoftmaxClassifier.pt
-models/HingeClassifier.pt
-models/ThreeLayerCNN.pt
-models/TwoLayerFC.pt
-models/TransformerClassifierFC.pt
+models/
+# models/ConvNextClassifierFC.pt
+# models/ConvNextClassifierOneLayer.pt
+# models/ResnetClassifierFC.pt
+# models/SoftmaxClassifier.pt
+# models/HingeClassifier.pt
+# models/ThreeLayerCNN.pt
+# models/TwoLayerFC.pt
+# models/TransformerClassifierFC.pt
 
 # notebook checkpoints
 .ipynb_checkpoints
